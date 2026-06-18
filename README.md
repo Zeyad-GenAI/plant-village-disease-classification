@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/Zeyad-GenAI/plant-village-disease-classification/main/apple_health.png" alt="AgroSense Banner" width="100%" />
+<img src="https://github.com/Zeyad-GenAI/plant-village-disease-classification/blob/master/argophoto.png" alt="AgroSense Banner" width="10%" />
 
 # 🌿 AgroSense — Plant Village Disease Classification
 
@@ -19,32 +19,7 @@ A deep-learning powered web application that classifies **38 plant diseases acro
 
 <br/>
 
-[**🚀 Demo**](#-demo--screenshots) · [**📦 Quick Start**](#-quick-start) · [**🧠 Architecture**](#-architecture) · [**🛣️ Roadmap**](#-roadmap) · [**🤝 Contribute**](#-contributing)
-
 </div>
-
----
-
-## 📑 Table of Contents
-
-* [✨ Overview](#-overview)
-* [🚀 Features](#-features)
-* [🧠 AI Architecture](#-ai-architecture)
-* [📂 Repository Structure](#-repository-structure)
-* [⚙️ Tech Stack](#-tech-stack)
-* [📦 Quick Start](#-quick-start)
-* [🖥️ Application Flow](#-application-flow)
-* [🌐 API Reference](#-api-reference)
-* [🔐 Configuration & Environment](#-configuration--environment)
-* [🐳 Docker Deployment](#-docker-deployment)
-* [📊 Performance Highlights](#-performance-highlights)
-* [🛡️ Security & Validation](#-security--validation)
-* [🖼️ Demo & Screenshots](#-demo--screenshots)
-* [🧪 Testing & Validation](#-testing--validation)
-* [🤝 Contributing](#-contributing)
-* [🛣️ Roadmap](#-roadmap)
-* [📜 License](#-license)
-* [👨‍💻 Author](#-author)
 
 ---
 
@@ -536,10 +511,6 @@ docker run -p 5000:5000 agrosense:latest
 
 ---
 
-## 🖼️ Demo & Screenshots
-
-> Replace these placeholders with real screenshots from your running instance for an even stronger portfolio effect.
-
 ### 🌿 Web Interface Preview
 
 <table>
@@ -574,14 +545,6 @@ Disease_Samples/
 ├── Grape___Black_rot.jpg
 └── ... 33 more
 ```
-
-### 🎥 Demo GIF
-
-> Drop a screen recording of the upload → result flow here to make the README truly cinematic.
->
-> `![AgroSense Demo](./docs/demo.gif)`
-
----
 
 ## 🧪 Testing & Validation
 
@@ -637,30 +600,6 @@ F --> G[🎉 Merge!]
 * 💅 CSS: BEM-friendly class naming (existing convention)
 * 📝 Commits: Imperative mood (`Add`, `Fix`, `Improve`)
 * 🧪 Add a sample image in `Disease_Samples/` when adding new classes
-
----
-
-## 🛣️ Roadmap
-
-| Priority | Initiative | Status |
-|---|---|---|
-| 🔥 High | Migrate class metadata to a `classes.json` for easier extension | ⏳ Planned |
-| 🔥 High | Add Dockerfile + `docker-compose.yml` to repo | ⏳ Planned |
-| 🔥 High | Add Grad-CAM visualization for explainability | ⏳ Planned |
-| ⚡ Medium | Confidence score surfaced in the UI | ⏳ Planned |
-| ⚡ Medium | REST `/api/predict` JSON endpoint (in addition to HTML) | ⏳ Planned |
-| ⚡ Medium | Multi-language expansion (Spanish, French, Hindi) | ⏳ Planned |
-| 🌟 Low | ONNX export for edge devices (Raspberry Pi, mobile) | ⏳ Planned |
-| 🌟 Low | Mobile app (Flutter / React Native) wrapper | ⏳ Planned |
-| 🌟 Low | Field-test telemetry & offline-first PWA | ⏳ Planned |
-
----
-
-## 📜 License
-
-Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for the full text.
-
-> ⚠️ **Disclaimer:** AgroSense provides informational predictions and is *not* a substitute for professional agronomic advice. Always consult a certified agricultural engineer before applying treatments.
 
 ---
 
