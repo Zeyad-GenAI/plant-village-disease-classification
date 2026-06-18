@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Plant Check | AgroSense</title>
+    <!-- ربط ملف التنسيقات باستخدام Jinja2 -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+    <main class="upload-page">
+        <section class="upload-hero">
+            <div class="upload-title">Check Plant Health</div>
+            <div class="upload-subtitle">
+                Upload a clear image of your plant leaf and AgroSense will help you classify the disease and show treatment guidance.
+            </div>
+        </section>
+
+        <!-- فورم الرفع المدمج لدعم الإرسال الفعلي للـ Backend -->
+        <form id="uploadForm" class="section-card" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="category" value="Auto" />
+
+            <div class="supported-box">
+                <div class="supported-title">Supported Plants</div>
+                <div class="supported-text">
+                    Banana, Bean, Cucumber, Wheat, and other supported plant categories. For best results, upload a clear leaf image with good lighting.
+                </div>
+            </div>
+
+            <div class="card-title">Upload Image</div>
+            <div class="card-text">
+                Choose or drag an image from your device. Supported formats depend on your browser, such as JPG, PNG, and WEBP.
+            </div>
+
+            <label class="upload-box" id="uploadBox" for="fileInput">
+                <div class="upload-icon">+</div>
+                <div class="upload-main-text">Tap to upload image</div>
+                <div class="upload-help">Click here or drag and drop an image</div>
+            </label>
+
+            <!-- تم تعديل الـ name ليكون file كما في الباك إند -->
+            <input type="file" id="fileInput" name="file" accept="image/*" required />
+        </form>
+
+        <section id="previewSection" class="section-card">
+            <div class="card-title">Image Preview</div>
+            <div class="card-text">
+                Review the selected image before classification.
+            </div>
+
+            <div id="emptyPreview" class="preview-empty">
+                No image selected yet.
+            </div>
+
+            <div id="fileInfo" style="display: none;">
+                <div id="fileName" class="file-name" data-selected-file="Selected file"></div>
+                <img id="previewImage" alt="Selected plant preview" />
+            </div>
+
+            <div id="classifyActions" class="actions-row">
+                <!-- زر التصنيف مربوط بالفورم لإرسال الصورة -->
+                <button type="submit" form="uploadForm" class="classify-btn" id="classifyBtn" disabled>
+                    Classify with AI
+                </button>
+                <button type="button" class="clear-btn" id="clearBtn">
+                    Clear
+                </button>
+            </div>
+
+            <!-- عرض أخطاء الرفع إن وجدت -->
+            {% if error %}
+            <div id="uploadError" class="error-text">{{ error }}</div>
+            {% else %}
+            <div id="uploadError" class="error-text" hidden></div>
+            {% endif %}
+        </section>
+
+        <!-- عرض النتيجة الحقيقية القادمة من الموديل -->
+        {% if result %}
+        <section id="resultSection" class="section-card">
+            <div class="card-title">Classification Complete</div>
+            <div class="card-text">
+                This is the detected result and recommended treatment for <strong>{{ plant_type }}</strong>.
+            </div>
+
+            <div class="result-grid">
+                <div class="result-box">
+                    <div class="result-lang">English</div>
+                    <div class="result-name">{{ result.en.name }}</div>
+                    <div class="result-treatment">{{ result.en.treatment }}</div>
+                </div>
+
+                <div class="result-box" dir="rtl">
+                    <div class="result-lang">Arabic</div>
+                    <div class="result-name">{{ result.ar.name }}</div>
+                    <div class="result-treatment">{{ result.ar.treatment }}</div>
+                </div>
+            </div>
+
+            <!-- زر لإعادة العملية -->
+            <button type="button" class="ok-btn" id="okBtn" onclick="window.location.href='/'">
+                Scan Another Plant
+            </button>
+        </section>
+        {% endif %}
+    </main>
+
+    <script>
+        const fileInput = document.getElementById("fileInput");
+        const uploadBox = document.getElementById("uploadBox");
+        const previewImg = document.getElementById("previewImage");
+        const fileInfo = document.getElementById("fileInfo");
+        const fileNameSpan = document.getElementById("fileName");
+        const emptyPreview = document.getElementById("emptyPreview");
+        const classifyBtn = document.getElementById("classifyBtn");
+        const clearBtn = document.getElementById("clearBtn");
+        const uploadError = document.getElementById("uploadError");
+        const selectedLabel = fileNameSpan.dataset.selectedFile || "Selected file";
+
+        fileInput.addEventListener("change", () => {
+            const file = fileInput.files[0];
+            handleSelectedFile(file);
+        });
+
+        clearBtn.addEventListener("click", clearUpload);
+
+        ["dragenter", "dragover"].forEach(eventName => {
+            uploadBox.addEventListener(eventName, event => {
+                event.preventDefault();
+                uploadBox.classList.add("drag-over");
+            });
+        });
+
+        ["dragleave", "drop"].forEach(eventName => {
+            uploadBox.addEventListener(eventName, event => {
+                event.preventDefault();
+                uploadBox.classList.remove("drag-over");
+            });
+        });
+
+        uploadBox.addEventListener("drop", event => {
+            const file = event.dataTransfer.files[0];
+            if (!file) return;
+
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            fileInput.files = dataTransfer.files;
+
+            handleSelectedFile(file);
+        });
+
+        function handleSelectedFile(file) {
+            if (uploadError) uploadError.hidden = true;
+
+            if (!file) {
+                clearUpload();
+                return;
+            }
+
+            if (!file.type.startsWith("image/")) {
+                if(uploadError) {
+                    uploadError.textContent = "Please select a valid image file.";
+                    uploadError.hidden = false;
+                }
+                clearUpload(false);
+                return;
+            }
+
+            fileNameSpan.textContent = `${selectedLabel}: ${file.name}`;
+            fileInfo.style.display = "block";
+            emptyPreview.style.display = "none";
+            classifyBtn.disabled = false;
+
+            const reader = new FileReader();
+            reader.onload = event => {
+                previewImg.src = event.target.result;
+                document.getElementById("classifyActions").scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearUpload(scrollToForm = true) {
+            fileInput.value = "";
+            previewImg.src = "";
+            fileInfo.style.display = "none";
+            emptyPreview.style.display = "flex";
+            fileNameSpan.textContent = "";
+            classifyBtn.disabled = true;
+
+            if (scrollToForm) {
+                document.getElementById("uploadForm").scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+            }
+        }
+
+        // التمرير التلقائي للنتيجة عند تحميلها من السيرفر
+        window.addEventListener("DOMContentLoaded", () => {
+            const resultSection = document.getElementById("resultSection");
+            if (resultSection) {
+                resultSection.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+        });
+    </script>
+</body>
+</html>
